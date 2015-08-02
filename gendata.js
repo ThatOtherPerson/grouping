@@ -1,3 +1,7 @@
+var fs = require('fs');
+
+var names = fs.readFileSync('names.dat', 'utf8').replace(/\r/g, '').split('\n');
+
 // number of students in cohort
 var n = 40;
 
@@ -12,6 +16,10 @@ var costs = [
   1, // Refuse to work with based on intrapersonal issues
   -1 // Would particularly enjoy working with
 ];
+
+var randomName = function() {
+  return names[(names.length * Math.random()) | 0];
+}
 
 var randomBool = function(chance) {
   chance = chance || 0.5;
@@ -40,7 +48,10 @@ var randomStudent = function() {
     students.push(randomOpinion());
   }
 
-  return students;
+  return {
+    name: randomName(),
+    opinions: students
+  };
 }
 
 var students = [];
@@ -49,4 +60,4 @@ for (var i = 0; i < n; i++) {
   students.push(randomStudent());
 }
 
-console.log(students);
+console.log(JSON.stringify(students, null, 2));
