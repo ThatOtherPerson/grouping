@@ -6,14 +6,14 @@ var students = JSON.parse(fs.readFileSync('random.dat', 'utf8'));
 var n = students.length;
 
 // number of students in group
-var group_size = 2;
+var group_size = 5;
 
 // number of groups
 var k = n / group_size;
 
 var weights = [
-  1, // Refuse to work with based on technical ability
-  1, // Refuse to work with based on intrapersonal issues
+  2, // Refuse to work with based on technical ability
+  2, // Refuse to work with based on intrapersonal issues
   -1 // Would particularly enjoy working with
 ];
 
@@ -146,7 +146,7 @@ var mutate = function(g) {
 var maxFitness = 0;
 var max = pool[0];
 
-for (var i = 0; i < 15; i++) {
+for (var i = 0; i < 1000; i++) {
   var newPool = [];
 
   var fitnesses = [];
