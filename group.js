@@ -25,7 +25,6 @@ var shuffle = function(arr) {
     var temp = arr[i];
     arr[i] = arr[randIndex];
     arr[randIndex] = temp;
-    //swap(arr, arr[randIndex], arr[i]);
     i--;
   }
 };
@@ -119,8 +118,35 @@ var roulette = function(values) {
   return values.length - 1;
 }
 
-// let's just do 10 generations for now
-for (var i = 0; i < 10; i++) {
+var crossover = function(p1, p2) {
+  // TODO: this approach seems biased to return certain results
+  var point = (Math.random() * p2.length) | 0;
+
+  var child = p1.slice();
+
+  for (var i = 0; i < point; i++) {
+    var switchPoint = child.indexOf(p2[i]);
+    var temp = child[switchPoint];
+    child[switchPoint] = child[i];
+    child[i] = temp;
+  }
+
+  return child;
+}
+
+var mutate = function(g) {
+  var point1 = (Math.random() * g.length) | 0;
+  var point2 = (Math.random() * g.length) | 0;
+
+  var temp = child[point1];
+  child[point1] = child[point2];
+  child[point2] = temp;
+}
+
+var maxFitness = 0;
+var max = pool[0];
+
+for (var i = 0; i < 1000; i++) {
   var newPool = [];
 
   var fitnesses = [];
@@ -130,14 +156,20 @@ for (var i = 0; i < 10; i++) {
   for (var j = 0; j < pool.length; j++) {
     var f = fitness(pool[j]);
     totalFitness += f;
+
+    if (f > maxFitness) {
+      maxFitness = f;
+      max = pool[j];
+    }
+
     fitnesses.push(f);
   }
 
-  console.log('Generation', i, 'average fitness:', totalFitness / pool.length);
+  console.log('Generation', i, 'average:', totalFitness / pool.length, 'max:', maxFitness);
 
   while (newPool.length < pool.length) {
-    var p1 = roulette(fitnesses);
-    var p2 = roulette(fitnesses);
+    var p1 = pool[roulette(fitnesses)];
+    var p2 = pool[roulette(fitnesses)];
 
     if (Math.random() < crossoverRate) {
       var child = crossover(p1, p2);
@@ -154,3 +186,5 @@ for (var i = 0; i < 10; i++) {
 
   pool = newPool;
 }
+
+console.log(max);
