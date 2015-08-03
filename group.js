@@ -48,7 +48,7 @@ var studentCost = function(student, group) {
 
   for (var i = 0; i < student.opinions.length; i++) {
     for (var j = 0; j < weights.length; j++) {
-      if (group[i]) {
+      if (group[i] && students[i] !== student) {
         sum += weights[j] * student.opinions[i][j];
       }
     }
@@ -69,7 +69,7 @@ var cost = function(grouping) {
 
     for (j = i; j < i + group_size; j++) {
       var currentStudent = students[grouping[j]];
-      var costOfStudent = studentCost(currentStudent, inGroup);
+      var costOfStudent = studentCost(currentStudent, inGroup, grouping[j]);
       sum += costOfStudent;
     }
   }
@@ -94,10 +94,6 @@ var pool = [];
 for (var i = 0; i < poolLength; i++) {
   pool.push(randomGrouping());
 }
-
-/*console.log(randomGrouping().map(function(i) {
-  return students[i].name;
-}));*/
 
 var roulette = function(values) {
   var total = values.reduce(function(memo, g) {
@@ -135,12 +131,16 @@ var crossover = function(p1, p2) {
 }
 
 var mutate = function(g) {
-  var point1 = (Math.random() * g.length) | 0;
-  var point2 = (Math.random() * g.length) | 0;
+  for (var i = 0; i < g.length; i++) {
+    if (Math.random() < mutationRate) {
+      var point1 = i;
+      var point2 = (Math.random() * g.length) | 0;
 
-  var temp = child[point1];
-  child[point1] = child[point2];
-  child[point2] = temp;
+      var temp = child[point1];
+      child[point1] = child[point2];
+      child[point2] = temp;
+    }
+  }
 }
 
 var maxFitness = 0;
@@ -177,9 +177,7 @@ for (var i = 0; i < 1000; i++) {
       var child = p1;
     }
 
-    if (Math.random() < mutationRate) {
-      mutate(child);
-    }
+    mutate(child);
 
     newPool.push(child);
   }
@@ -188,3 +186,55 @@ for (var i = 0; i < 1000; i++) {
 }
 
 console.log(max);
+console.log(max.map(function(i) {
+  return students[i].name;
+}));
+
+var happiness = function(student, group) {
+  var tech = 0;
+  var issues = 0;
+  var enjoy = 0;
+
+  for (var i = 0; i < student.opinions.length; i++) {
+    if (student.opinions[i][0] && group[i]) {
+      tech++;
+    }
+
+    if (student.opinions[i][1] && group[i]) {
+      issues++;
+    }
+
+    if (student.opinions[i][2] && group[i]) {
+      enjoy++;
+    }
+  }
+
+  var ret = student.name + ' ';
+
+  if (tech) {
+    ret += tech + ' -tech ';
+  }
+
+  if (issues) {
+    ret += issues + ' -issues ';
+  }
+
+  if (enjoy) {
+    ret += enjoy + ' +enjoy';
+  }
+
+  return ret;
+}
+
+for (var i = 0; i < n; i += group_size) {
+  var inGroup = {};
+  for (var j = i; j < i + group_size; j++) {
+    inGroup[max[j]] = true;
+  }
+
+  for (j = i; j < i + group_size; j++) {
+    var currentStudent = students[max[j]];
+
+    console.log(happiness(currentStudent, inGroup));
+  }
+}
