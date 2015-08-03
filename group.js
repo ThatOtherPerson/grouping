@@ -87,7 +87,7 @@ var fitness = function(grouping) {
 var poolLength = 20;
 
 var crossoverRate = 0.7;
-var mutationRate = 0.001;
+var mutationRate = 0.005;
 
 var pool = [];
 
@@ -146,7 +146,7 @@ var mutate = function(g) {
 var maxFitness = 0;
 var max = pool[0];
 
-for (var i = 0; i < 1000; i++) {
+for (var i = 0; i < 15; i++) {
   var newPool = [];
 
   var fitnesses = [];
