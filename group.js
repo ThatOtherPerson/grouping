@@ -12,8 +12,8 @@ var group_size = 5;
 var k = n / group_size;
 
 var weights = [
-  2, // Refuse to work with based on technical ability
-  2, // Refuse to work with based on intrapersonal issues
+  8, // Refuse to work with based on technical ability
+  10, // Refuse to work with based on intrapersonal issues
   -1 // Would particularly enjoy working with
 ];
 
@@ -58,9 +58,10 @@ var studentCost = function(student, group) {
 };
 
 var cost = function(grouping) {
-  var sum = 0;
+  var sum = n * group_size;
 
   if (grouping.length !== n) throw new Error('You terrible person');
+
   for (var i = 0; i < n; i += group_size) {
     var inGroup = {};
     for (var j = i; j < i + group_size; j++) {
@@ -80,7 +81,9 @@ var cost = function(grouping) {
 var fitness = function(grouping) {
   // The minimum cost is -group_size * k
   // which would signify a perfect solution
-  return 1 / (cost(grouping) + group_size * k);
+  var f = 1 / (cost(grouping));
+  if (f === Infinity) console.log('yes', cost(grouping));
+  return f;
 }
 
 // genetic algorithm
@@ -189,6 +192,8 @@ console.log(max);
 console.log(max.map(function(i) {
   return students[i].name;
 }));
+
+console.log('Cost of max:', cost(max), 'fitness:', fitness(max));
 
 var happiness = function(student, group) {
   var tech = 0;

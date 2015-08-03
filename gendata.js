@@ -29,10 +29,10 @@ var randomBool = function(chance) {
 // Generates one student's opinion of another student
 var randomOpinion = function() {
   // a student has three weights
-  var negTech = randomBool(0.2);
-  var negIssues = randomBool(0.2);
+  var negTech = randomBool(0.05);
+  var negIssues = randomBool(0.05);
 
-  var posEnjoy = negTech || negIssues ? false : randomBool();
+  var posEnjoy = negTech || negIssues ? false : randomBool(0.4);
 
   return [
     negTech,
